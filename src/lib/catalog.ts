@@ -5,7 +5,7 @@ export const productSchema = z.object({
   sizes: z.array(z.string()), stock: z.number().int().nonnegative(),
   price: z.number().int().nonnegative(), // integer kuruş, never floating-point totals
   images: z.array(z.string()).min(1), category: z.string(), color: z.string(),
-  label: z.string().optional(), demo: z.boolean(),
+  originalPrice: z.number().int().nonnegative().optional(), label: z.string().optional(), demo: z.boolean(),
 });
 export type Product = z.infer<typeof productSchema>;
 export const money = (kurus: number) => new Intl.NumberFormat('tr-TR', {
@@ -32,6 +32,8 @@ const apiProductSchema = z.object({
   total_qty: z.number().int().nonnegative(), price: z.union([z.string(), z.number()]),
   images: z.array(z.string()), variant: z.string(),
   category: z.object({ name: z.string() }).nullable().optional(),
+  campaign: z.object({ name: z.string(), discount: z.number().int().min(0).max(100) }).nullable().optional(),
+  isDemo: z.boolean().optional(),
 });
 
 export function parseApiProducts(body: unknown): Product[] {
@@ -39,7 +41,9 @@ export function parseApiProducts(body: unknown): Product[] {
     const price = Math.round(Number(p.price) * 100);
     if (!Number.isSafeInteger(price) || price < 0) throw new Error('Invalid price');
     return {
-      id: p.id, name: p.name, details: p.details, sizes: p.sizes, stock: p.total_qty, price,
+      id: p.id, name: p.name, details: p.details, sizes: p.sizes, stock: p.total_qty, price: Math.round(price * (100 - (p.campaign?.discount ?? 0)) / 100),
+      originalPrice: p.campaign?.discount ? price : undefined,
+      label: p.isDemo ? 'Örnek ürün' : p.campaign?.discount ? `%${p.campaign.discount} indirim` : undefined,
       images: p.images.length ? p.images.map(image => {
         if (/^https:\/\//.test(image)) return image;
         return `/api/${encodeURIComponent(image)}`;

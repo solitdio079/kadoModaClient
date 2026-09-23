@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Heart, Menu, Search, ShoppingBag, UserRound, X, ArrowUpRight } from 'lucide-react';
 import { useShop } from '../stores/shop';
+import { useSession } from '../stores/session';
 import { isDemo } from '../lib/CatalogProvider';
 
 export const departments = ['Elbiseler', 'Ceketler', 'Üst Giyim', 'Takımlar', 'Dış Giyim', 'Aksesuar'];
@@ -29,6 +30,7 @@ function SearchForm() {
 
 export function Layout() {
   const location = useLocation();
+  const profile = useSession(s => s.profile);
   const menu = useRef<HTMLDialogElement>(null);
   const main = useRef<HTMLElement>(null);
   const initial = useRef(true);
@@ -43,7 +45,7 @@ export function Layout() {
   }, [location.pathname, location.search]);
   return <>
     <a className="skip-link" href="#main">İçeriğe geç</a>
-    {isDemo && <div className="demo-banner">Ön izleme mağazası · Örnek ürünler gösterilmektedir. Sipariş ve ödeme kapalıdır.</div>}
+    <div className="demo-banner">{isDemo ? 'Ön izleme mağazası · Örnek ürünler gösterilmektedir. Sipariş ve ödeme kapalıdır.' : 'Mağazamız hazırlanıyor · Koleksiyonu keşfedebilirsiniz. Sipariş ve ödeme henüz açık değildir.'}</div>
     <div className="utility-bar"><span>KADO MODA BUTİK</span><span>Özenle seçildi. Sizin için.</span><Link to="/yardim">Yardım & bilgi <ArrowUpRight size={12} /></Link></div>
     <header className="header">
       <div className="header-main shell">
@@ -65,7 +67,7 @@ export function Layout() {
       <div className="menu-inner"><div className="menu-top"><strong id="menu-title">Koleksiyonlar</strong><button className="icon-button" aria-label="Menüyü kapat" onClick={() => menu.current?.close()}><X /></button></div>
         <Link to="/koleksiyon">Tüm Koleksiyon</Link><Link to="/koleksiyon?secim=yeni">Yeni Gelenler</Link>
         {departments.map(name => <Link key={name} to={categoryLink(name)}>{name}<ArrowUpRight size={17} /></Link>)}
-        <Link to="/favorilerim">Favorilerim</Link><Link to="/hesabim">Hesabım</Link>
+        <Link to="/favorilerim">Favorilerim</Link><Link to="/hesabim">Hesabım</Link>{profile?.role === 'ADMIN' && <Link to="/yonetim">Mağaza yönetimi</Link>}
       </div>
     </dialog>
     <main id="main" ref={main} tabIndex={-1}><Outlet /></main>

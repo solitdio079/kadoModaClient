@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 COPY . .
-ARG VITE_CATALOG_MODE=demo
+ARG VITE_CATALOG_MODE=live
 ENV VITE_CATALOG_MODE=$VITE_CATALOG_MODE
 RUN npm run build
 

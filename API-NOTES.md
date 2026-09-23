@@ -1,53 +1,53 @@
-# API integration findings
+# API integration status — 2026-09-23
 
-Inspected on 2026-09-23 against the local `kadomodaAPI` source and the live
-`https://api.kadomoda.com` service. Local source may differ from deployed code.
-No backend implementation was changed in Step 1.
+The following fixes are implemented in the local kadomodaAPI repository, not yet
+deployed. See its README.md for Coolify setup and bootstrap/seed commands.
 
-## Verified live
+## Fixed and tested
 
-- Anonymous `GET /product` initially returned `401`. During implementation the
-  backend was updated; the final direct and proxied checks both returned `200`
-  with `{"data":[]}`. Public product browsing is now available.
-- The initial cross-origin preflight `OPTIONS /product` returned `401` without
-  an Access-Control-Allow-Origin header. It was not re-tested after the update.
-- The frontend uses a same-origin reverse proxy, so the browser needs no CORS
-  exception. This does not remove or bypass backend authorization.
+1. Catalog reads are public; allowed CORS preflight runs before authentication.
+2. Orders require authentication and enforce ownership. ADMIN-only status updates
+   validate transitions; payment/owner/price edits and order deletion are blocked.
+3. Product PUT/PATCH update the existing ID, preserve omitted images, validate
+   multipart values and filter categories using categoryId.
+4. All product/category/campaign mutations and media uploads require ADMIN.
+5. A server-only admin:bootstrap script creates/promotes the requested admin with
+   a hashed password. It never resets an existing password. Live provisioning is pending.
+6. Migration removes relation ID 0 defaults; category is required and campaign
+   optional. seed:demo creates eight real products with isDemo and unique seedKey
+   tracking. Reruns preserve edits; --list and --delete --apply support scoped cleanup.
+   No sample records have been inserted live.
+7. Carts enforce ownership, quantity/size validation, database pricing/discounts,
+   aggregate stock checks and atomic line/total replacement. Checkout remains
+   closed with 503 CHECKOUT_UNAVAILABLE until the full payment/inventory milestone.
+8. Addresses map zipCode to zipcode, reject client userId, enforce ownership and
+   prevent editing addresses already used by orders.
 
-## Source contract used in Step 1
+Additional fixes include bounded uploads/signature checks, private import files,
+safe JSON errors, security headers, authentication rate limits and purpose-specific
+JWTs. Existing login tokens require a fresh login after deployment.
 
-- `POST /auth/login`: JSON `{ email, password }`; success `{ message, token }`.
-- `GET /product`: `{ data: Product[] }`, now available without login.
-- Product data: `id`, `name`, `details`, `sizes`, `total_qty`, decimal-string `price`,
-  filename array `images`, `variant`, nested `category` and `campaign`.
-- Static files are served from the API root (`/<uploaded filename>`).
+## Frontend contracts
 
-## Work required before commercial checkout
+- POST /auth/login: { email, password }, success { message, token }.
+- GET /product: { data: Product[] }; uploaded images are API-root filenames.
+- Cart replacement: array of { productId, size, quantity }, no price/cartId fields.
+- Addresses: zipCode input, no userId.
+- Products: real categoryId, optional nullable campaignId; partial PATCH supported.
+- Keep all frontend feedback Turkish through its error mapper; some legacy account
+  endpoints still contain English messages.
 
-1. Product/category/campaign reads were made public during this work. Retain
-   server-side admin authorization on writes. Never ship an admin JWT to allow
-   public browsing.
-2. `/order` was mounted during this work, before the global JWT middleware. The
-   current order router has no authentication middleware visible; review its
-   handlers and ensure authentication and ownership checks precede all operations.
-3. Product PUT/PATCH handlers still call `prisma.product.create`. Editing must update
-   the existing ID instead of creating a duplicate. The category-product query
-   still filters `campaignId`, not `categoryId`.
-4. Product/category/campaign mutations now require JWT, but product delete and
-   category mutations lack visible admin guards. Check campaign mutations too.
-   Authentication alone must not allow ordinary users to change merchandise.
-5. Public signup creates a USER, and role promotion needs an existing ADMIN.
-   Bootstrap the requested initial admin through a controlled server/database
-   operation. Never expose self-promotion or store its password in Vite variables.
-6. Sample imports need valid category/campaign relationships; schema defaults are
-   ID 0. Create or select real related records, track seed IDs, and confirm cleanup
-   rules before using the sample catalog with the admin UI.
-7. Audit order ownership, server-authoritative prices/totals, stock per size,
-   quantity validation, payment/webhook idempotency and status transitions before
-   turning on checkout. A frontend cart total must not authorize a charge.
-8. Address validation uses `zipCode` while the schema uses `zipcode`; confirm the
-   controller mapping. Confirm supported payment provider, shipping rates and
-   merchant business information at their implementation milestones.
+The frontend still uses a browser-local cart and negative-ID preview fixtures.
+After API deployment and optional seeding, build with VITE_CATALOG_MODE=live for
+real products. Admin screens/account synchronization remain subsequent steps.
 
-These findings define the later milestones; they are not claims that the current
-API is ready to accept customer payments or that fixes have already been deployed.
+## Verification and remaining work
+
+Passed: TypeScript, 7 unit tests, 10 isolated-database integration tests, all 15
+migrations on a fresh database and schema drift check. Docker build/runtime and
+live acceptance checks remain for Coolify. Production data was not changed.
+
+Before sales: per-size stock/reservations, immutable order snapshots, shipping,
+provider-verified payments and idempotent webhooks, refunds and purchase tests.
+Account recovery/session lifecycle, branded email, merchant/legal content remain
+later milestones. Checkout cannot be enabled by a runtime switch.

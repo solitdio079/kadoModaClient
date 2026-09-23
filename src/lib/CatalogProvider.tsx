@@ -2,9 +2,10 @@ import { createContext, useContext, useEffect, useState, useCallback, type React
 import { demoProducts } from '../data/products';
 import { parseApiProducts, type Product } from './catalog';
 import { apiRequest, errorMessage } from './api';
+import { useShop } from '../stores/shop';
 import { useSession } from '../stores/session';
 
-const mode = import.meta.env.VITE_CATALOG_MODE ?? 'demo';
+const mode = import.meta.env.VITE_CATALOG_MODE ?? 'live';
 if (!['demo', 'live'].includes(mode)) throw new Error('VITE_CATALOG_MODE must be demo or live');
 export const isDemo = mode === 'demo';
 const CatalogContext = createContext<{ products: Product[]; loading: boolean; error: string | null; retry: () => void }>({ products: [], loading: true, error: null, retry: () => {} });
@@ -21,7 +22,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     const controller = new AbortController();
     setLoading(true); setError(null); setProducts([]);
     apiRequest('/product', { token: token ?? undefined, signal: controller.signal })
-      .then(body => { if (!controller.signal.aborted) setProducts(parseApiProducts(body)); })
+      .then(body => { if (!controller.signal.aborted) { const parsed = parseApiProducts(body); setProducts(parsed); useShop.getState().reconcile(parsed, false); } })
       .catch(e => { if (!controller.signal.aborted) setError(errorMessage(e)); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();

@@ -9,7 +9,7 @@ export function apiMessage(status: number, context: 'login' | 'general' = 'gener
     : 'Bu işlem için giriş yapmanız gerekiyor. Oturumunuz sona ermiş olabilir.';
   if (status === 403) return 'Bu işlemi yapmak için yetkiniz bulunmuyor.';
   if (status === 404) return 'Aradığınız kayıt bulunamadı.';
-  if (status === 409) return 'Bu bilgilerle bir kayıt zaten mevcut.';
+  if (status === 409) return 'Kayıt başka bir yerde kullanılıyor, zaten mevcut veya değiştirilmiş olabilir. Bilgileri kontrol edip tekrar deneyin.';
   if (status === 429) return 'Çok fazla deneme yaptınız. Lütfen biraz sonra tekrar deneyin.';
   if (status === 400 || status === 422) return 'Bilgilerinizi kontrol ederek tekrar deneyin.';
   if (status >= 500) return 'Şu anda hizmet veremiyoruz. Lütfen biraz sonra tekrar deneyin.';

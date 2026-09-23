@@ -16,8 +16,8 @@ proposal. The figure sits before the Kado Moda wordmark on desktop and mobile.
 
 **This milestone is a deployable preview, not a sales-ready store.** Ordering and
 payments are closed. The admin account has not been created and demo records have
-not been inserted into the live database. They are reserved for Step 2, after this
-deployment is checked. No supplied password is stored in this repository.
+not been inserted into the live database. The API now includes tested bootstrap and demo-seeding scripts; run them on the
+server after API deployment using its README instructions. No supplied password is stored in this repository.
 
 ## Local development
 

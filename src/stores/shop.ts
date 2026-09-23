@@ -18,16 +18,35 @@ export function addCartLine(lines: CartLine[], product: Product, size: string): 
     : [...lines, { product, size, quantity: 1 }];
 }
 
+// Refresh browser-local cart snapshots after successful catalog loads. Deleted
+// products/sizes are removed and quantities are capped across all sizes.
+export function reconcileCart(lines: CartLine[], products: Product[], demo: boolean): CartLine[] {
+  const byId = new Map(products.map(p => [p.id, p]));
+  const used = new Map<number, number>();
+  return lines.flatMap(line => {
+    if (line.product.demo !== demo) return [line];
+    const product = byId.get(line.product.id);
+    if (!product || !product.sizes.includes(line.size)) return [];
+    const available = Math.max(0, Math.min(product.stock, 99) - (used.get(product.id) ?? 0));
+    const quantity = Math.min(line.quantity, available);
+    if (!quantity) return [];
+    used.set(product.id, (used.get(product.id) ?? 0) + quantity);
+    return [{ ...line, product, quantity }];
+  });
+}
+
 interface ShopState {
   lines: CartLine[]; favorites: number[];
   add: (product: Product, size: string) => boolean;
   quantity: (key: string, quantity: number) => boolean;
   remove: (key: string) => void;
   toggleFavorite: (id: number) => void;
+  reconcile: (products: Product[], demo: boolean) => void;
 }
 
 export const useShop = create<ShopState>()(persist((set, get) => ({
   lines: [], favorites: [],
+  reconcile: (products, demo) => set({ lines: reconcileCart(get().lines, products, demo) }),
   add: (product, size) => {
     const lines = addCartLine(get().lines, product, size);
     if (!lines) return false;

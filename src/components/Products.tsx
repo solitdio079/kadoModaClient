@@ -19,7 +19,7 @@ export function FavoriteButton({ product }: { product: Product }) {
 
 export function ProductCard({ product }: { product: Product }) {
   return <article className="product-card"><div className="product-photo"><Link to={`/urun/${product.id}`} tabIndex={-1} aria-hidden="true"><ProductImage product={product} /></Link>{product.label && <span className="product-tag">{product.label}</span>}<FavoriteButton product={product} /></div>
-    <div className="product-info"><span className="product-category">{product.category}</span><h3><Link to={`/urun/${product.id}`}>{product.name}</Link></h3><div className="product-meta"><span>{product.color}</span><strong>{money(product.price)}</strong></div></div>
+    <div className="product-info"><span className="product-category">{product.category}</span><h3><Link to={`/urun/${product.id}`}>{product.name}</Link></h3><div className="product-meta"><span>{product.color}</span><strong>{product.originalPrice !== undefined && <del className="old-price">{money(product.originalPrice)}</del>}{money(product.price)}</strong></div></div>
   </article>;
 }
 
