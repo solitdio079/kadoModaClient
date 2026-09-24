@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { cloneElement, useEffect, useId, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X, Upload } from 'lucide-react';
@@ -12,13 +12,14 @@ export function Modal({ title, children, close, busy = false }: { title: string;
   useEffect(() => { const el = ref.current; el?.showModal(); return () => el?.close(); }, []);
   return <dialog ref={ref} className="admin-dialog" aria-labelledby={titleId} onCancel={e => { e.preventDefault(); if (!busy) close(); }}><header><div><span className="eyebrow">KADO MODA · YÖNETİM</span><h2 id={titleId}>{title}</h2></div><button className="icon-button" type="button" aria-label="Pencereyi kapat" disabled={busy} onClick={close}><X /></button></header>{children}</dialog>;
 }
-function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
-  return <label className="admin-field"><span>{label}</span>{children}{error && <span className="field-error" role="alert">{error}</span>}</label>;
+function Field({ label, error, children }: { label: string; error?: string; children: ReactElement<Record<string, unknown>> }) {
+  const id = useId();
+  return <div className="admin-field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id, "aria-invalid": !!error, "aria-describedby": error ? `${id}-error` : undefined })}{error && <span id={`${id}-error`} className="field-error" role="alert">{error}</span>}</div>;
 }
 function ImagePicker({ files, setFiles, existing, max = 6 }: { files: File[]; setFiles: (files: File[]) => void; existing: string[]; max?: number }) {
   const [previews, setPreviews] = useState<string[]>([]);
   useEffect(() => { const urls = files.map(f => URL.createObjectURL(f)); setPreviews(urls); return () => urls.forEach(URL.revokeObjectURL); }, [files]);
-  return <div className="admin-image-picker"><label className="admin-upload"><Upload size={20} /><span>Görsel seç <small>JPG, PNG, WebP · Her biri en fazla 5 MB · En fazla {max} görsel</small></span><input type="file" accept="image/jpeg,image/png,image/webp" multiple={max > 1} onChange={e => setFiles(Array.from(e.target.files ?? []))} /></label><div className="admin-previews">{(previews.length ? previews : existing.map(imageUrl)).map((src, i) => <img key={src} src={src} alt={`${previews.length ? 'Seçilen' : 'Mevcut'} görsel ${i + 1}`} />)}</div>{existing.length > 0 && <p className="muted">Yeni görsel seçerseniz mevcut görsellerin yerine kaydedilir. Seçmezseniz mevcut görseller korunur.</p>}</div>;
+  return <div className="admin-image-picker"><label className="admin-upload"><Upload size={20} /><span>Görsel seç <small>JPG, PNG, WebP · Her biri en fazla 5 MB · En fazla {max} görsel</small></span><input className="sr-only" aria-label="Görsel dosyalarını seç" type="file" accept="image/jpeg,image/png,image/webp" multiple={max > 1} onChange={e => setFiles(Array.from(e.target.files ?? []))} /><span className="admin-file-summary">{files.length ? `${files.length} görsel seçildi: ${files.map(f => f.name).join(', ')}` : 'Henüz yeni görsel seçilmedi.'}</span></label><div className="admin-previews">{(previews.length ? previews : existing.map(imageUrl)).map((src, i) => <img key={src} src={src} alt={`${previews.length ? 'Seçilen' : 'Mevcut'} görsel ${i + 1}`} />)}</div>{existing.length > 0 && <p className="muted">Yeni görsel seçerseniz mevcut görsellerin yerine kaydedilir. Seçmezseniz mevcut görseller korunur.</p>}</div>;
 }
 const blank: ProductForm = { name: '', details: '', sizesString: 'S, M, L', total_qty: '0', price: '', variant: '', categoryId: '', campaignId: '' };
 export function ProductEditor({ product, categories, campaigns, token, close, saved }: { product?: AdminProduct; categories: Category[]; campaigns: Campaign[]; token: string; close: () => void; saved: () => void }) {

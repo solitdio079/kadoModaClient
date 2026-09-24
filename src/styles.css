@@ -97,7 +97,7 @@ main:focus { outline:none; }
 .brand-story .eyebrow { color:var(--gold); }
 .brand-story h2 { font-family:'Playfair Display',serif; font-size:40px; font-weight:500; margin:13px 0 18px; }
 .brand-story p { line-height:1.9; color:var(--muted); font-size:13px; margin-bottom:23px; }
-.footer { border-top:1px solid var(--line); background:#fff; padding:50px 0 0; }
+.footer { display:block; border-top:1px solid var(--line); background:#fff; padding:50px 0 0; }
 .footer-grid { display:grid; grid-template-columns:1.3fr 1fr 1fr 1.3fr; gap:35px; }
 .footer .brand img { width:31px; height:45px; }
 .footer .brand > span { font-size:19px; }
@@ -263,7 +263,7 @@ summary { cursor:pointer; font-weight:600; }
   .brand-story p { font-size:12px; }
   .footer { padding-top:30px; }
   .footer-grid { grid-template-columns:1fr 1fr; gap:25px 18px; }
-  .footer-grid > div:first-child { grid-column:1 / -1; display:flex; justify-content:space-between; align-items:center; }
+  .footer-grid > div:first-child { grid-column:1 / -1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
   .footer-grid > div:first-child p { margin:0; font-size:10px; }
   .footer h2 { font-size:11px; margin-bottom:17px; }
   .footer-grid > div > a:not(.brand):not(.text-link) { font-size:11px; }
@@ -392,4 +392,42 @@ summary { cursor:pointer; font-weight:600; }
   .admin-form-grid { grid-template-columns:1fr; gap:18px; }
   .admin-field .input,.admin-field .select,.admin-field .textarea { font-size:16px; }
   .admin-form-actions .btn { padding:12px; flex:1; }
+}
+
+.admin-upload { cursor:pointer; }
+.admin-upload:focus-within { outline:2px solid var(--gold); outline-offset:3px; }
+.admin-file-summary { width:100%; font-size:11px; color:var(--muted); overflow-wrap:anywhere; }
+.settings-layout { display:grid; grid-template-columns:240px minmax(0,1fr); gap:36px; margin-top:32px; align-items:start; }
+.settings-nav { display:flex; flex-direction:column; border:1px solid var(--line); }
+.settings-nav button { display:flex; text-align:left; align-items:center; gap:12px; padding:18px 16px; border:0; border-bottom:1px solid var(--line); background:white; font-size:12px; }
+.settings-nav button[aria-current=page] { background:var(--paper); color:#765b31; }
+.settings-nav small { display:block; font-size:10px; margin-top:5px; color:var(--muted); }
+.settings-nav > p { padding:16px; font-size:11px; color:var(--muted); }
+.settings-editor { min-width:0; }
+.settings-editor > .muted { line-height:1.8; margin:16px 0 24px; }
+.settings-fields { border:0; padding:0; margin:0; min-width:0; }
+.settings-fields .policy-textarea { min-height:430px; line-height:1.8; }
+.publication-confirm { align-items:flex-start; line-height:1.8; padding:20px; margin:24px 0; background:var(--paper); }
+.publication-confirm input { flex-shrink:0; margin-top:2px; }
+.settings-actions { display:flex; flex-wrap:wrap; align-items:center; gap:14px; }
+.settings-fields > .muted { margin-top:20px; line-height:1.8; }
+.information-page { max-width:900px; min-height:50vh; }
+.information-page > .eyebrow { color:var(--gold); }
+.information-page h1 { font-family:'Playfair Display',serif; font-size:40px; font-weight:500; margin:14px 0 28px; }
+.information-copy p { white-space:pre-wrap; overflow-wrap:anywhere; font-size:14px; line-height:1.9; margin:0 0 22px; }
+.information-date { border-top:1px solid var(--line); color:var(--muted); font-size:11px; margin-top:32px; padding-top:20px; }
+.information-intro { font-size:14px; line-height:1.8; color:var(--muted); }
+.contact-links { display:flex; gap:12px; flex-wrap:wrap; margin:24px 0; }
+.business-details > div { display:grid; grid-template-columns:240px 1fr; gap:20px; padding:18px 0; border-bottom:1px solid var(--line); font-size:13px; line-height:1.8; }
+.business-details dt { color:var(--muted); }
+.business-details dd { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:760px) {
+  .admin-nav { flex-wrap:wrap; gap:0 16px; justify-content:flex-start; }
+  .settings-layout { grid-template-columns:1fr; gap:24px; }
+  .settings-nav { display:grid; grid-template-columns:1fr 1fr; }
+  .settings-nav button { padding:14px 10px; font-size:11px; gap:7px; }
+  .settings-nav > p { grid-column:1/-1; margin:0; }
+  .settings-actions .btn { flex:1; padding-inline:12px; }
+  .business-details > div { grid-template-columns:1fr; gap:6px; }
+  .information-page h1 { font-size:31px; }
 }

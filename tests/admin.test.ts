@@ -56,3 +56,10 @@ it('refreshes cart prices and caps total stock after admin changes, preserving l
   expect(updated[0].product.price).toBe(100);
   expect(reconcileCart(lines, [], false)).toHaveLength(1);
 });
+
+import { publicationErrors } from '../src/lib/siteContent';
+it('blocks publishing incomplete policies and contact details', () => {
+  expect(publicationErrors('privacy', { body: 'Short draft' })).toHaveProperty('body');
+  expect(publicationErrors('privacy', { body: 'Approved policy text. '.repeat(8) })).toEqual({});
+  expect(publicationErrors('business', { body: 'Wrong shape' })).toHaveProperty('root');
+});

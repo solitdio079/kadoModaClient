@@ -1,7 +1,7 @@
 # API integration status — 2026-09-23
 
-The following fixes are implemented in the local kadomodaAPI repository, not yet
-deployed. See its README.md for Coolify setup and bootstrap/seed commands.
+The API has been deployed by the user. Public health and catalog endpoints were
+checked successfully; authenticated live mutations await administrator provisioning. See its README.md for Coolify setup and bootstrap/seed commands.
 
 ## Fixed and tested
 
@@ -37,9 +37,10 @@ JWTs. Existing login tokens require a fresh login after deployment.
 - Keep all frontend feedback Turkish through its error mapper; some legacy account
   endpoints still contain English messages.
 
-The frontend still uses a browser-local cart and negative-ID preview fixtures.
-After API deployment and optional seeding, build with VITE_CATALOG_MODE=live for
-real products. Admin screens/account synchronization remain subsequent steps.
+The frontend now defaults to live products and includes product/category/campaign
+admin screens. Its cart remains browser-local but refreshes prices and availability
+after catalog loads. Negative-ID fixtures are available only in explicit demo mode.
+Account synchronization remains a subsequent step.
 
 ## Verification and remaining work
 
@@ -51,3 +52,13 @@ Before sales: per-size stock/reservations, immutable order snapshots, shipping,
 provider-verified payments and idempotent webhooks, refunds and purchase tests.
 Account recovery/session lifecycle, branded email, merchant/legal content remain
 later milestones. Checkout cannot be enabled by a runtime switch.
+
+
+## Store information extension — 2026-09-24
+
+Deploy the new API migration before the frontend update. GET /site-content returns
+only published snapshots. GET /site-content/admin and PUT /site-content/admin/:slug
+require ADMIN. The PUT body is { revision, action, confirmed, content }; actions are
+save, publish, unpublish. Drafts do not leak through public endpoints, publishing
+validates completeness and explicit confirmation, and stale revisions return 409.
+Checkout remains closed. No merchant content has been invented or published live.

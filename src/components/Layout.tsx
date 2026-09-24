@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Heart, Menu, Search, ShoppingBag, UserRound, X, ArrowUpRight } from 'lucide-react';
 import { useShop } from '../stores/shop';
+import { contentPages, useSiteContent } from '../lib/siteContent';
 import { useSession } from '../stores/session';
 import { isDemo } from '../lib/CatalogProvider';
 
@@ -30,6 +31,7 @@ function SearchForm() {
 
 export function Layout() {
   const location = useLocation();
+  const site = useSiteContent();
   const profile = useSession(s => s.profile);
   const menu = useRef<HTMLDialogElement>(null);
   const main = useRef<HTMLElement>(null);
@@ -71,6 +73,6 @@ export function Layout() {
       </div>
     </dialog>
     <main id="main" ref={main} tabIndex={-1}><Outlet /></main>
-    <footer className="footer"><div className="shell footer-grid"><div><Logo /><p>Zamansız bir duruş.<br />Kendinize ait bir stil.</p></div><div><h2>Koleksiyonu keşfedin</h2><Link to="/koleksiyon">Tüm ürünler</Link><Link to={categoryLink('Elbiseler')}>Elbiseler</Link><Link to={categoryLink('Ceketler')}>Ceketler</Link><Link to={categoryLink('Üst Giyim')}>Üst giyim</Link></div><div><h2>Size yardımcı olalım</h2><Link to="/hesabim">Hesabım</Link><Link to="/favorilerim">Favorilerim</Link><Link to="/yardim">Mağaza hakkında</Link></div><div className="footer-note"><span className="eyebrow">KADO MODA BUTİK</span><p>Günün her anına eşlik eden,<br />özenle seçilmiş parçalar.</p><Link to="/koleksiyon" className="text-link">Koleksiyona göz atın <ArrowUpRight size={16} /></Link></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} Kado Moda Butik</span><span>Türkiye · Türkçe · ₺ TRY</span></div></footer>
+    <footer className="footer"><div className="shell footer-grid"><div><Logo /><p>Zamansız bir duruş.<br />Kendinize ait bir stil.</p></div><div><h2>Koleksiyonu keşfedin</h2><Link to="/koleksiyon">Tüm ürünler</Link><Link to={categoryLink('Elbiseler')}>Elbiseler</Link><Link to={categoryLink('Ceketler')}>Ceketler</Link><Link to={categoryLink('Üst Giyim')}>Üst giyim</Link></div><div><h2>Size yardımcı olalım</h2><Link to="/hesabim">Hesabım</Link><Link to="/favorilerim">Favorilerim</Link><Link to="/iletisim">İletişim</Link>{site.records.filter(r => r.slug !== 'business').map(r => { const page = contentPages[r.slug as keyof typeof contentPages]; return <Link key={r.slug} to={page.path}>{page.title}</Link>; })}<Link to="/yardim">Yardım</Link></div><div className="footer-note"><span className="eyebrow">KADO MODA BUTİK</span><p>Günün her anına eşlik eden,<br />özenle seçilmiş parçalar.</p><Link to="/koleksiyon" className="text-link">Koleksiyona göz atın <ArrowUpRight size={16} /></Link></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} Kado Moda Butik</span><span>Türkiye · Türkçe · ₺ TRY</span></div></footer>
   </>;
 }
