@@ -8,6 +8,10 @@ ENV VITE_CATALOG_MODE=$VITE_CATALOG_MODE
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:stable-alpine
+USER root
+# Keep the upstream HTTPS trust store current in the runtime image.
+RUN apk add --no-cache --upgrade ca-certificates && update-ca-certificates
+USER nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080
