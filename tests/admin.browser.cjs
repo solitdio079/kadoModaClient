@@ -13,6 +13,8 @@ const fs = require('node:fs/promises');
     let campaigns = [{ id: 1, name: 'Yeni Sezon', discount: 10, image: null }];
     let products = [{ id: 1, name: 'Saten Midi Elbise', details: 'Zamansız kesimiyle saten midi elbise.', sizes: ['S','M','L'], total_qty: 12, price: '1890', variant: 'Siyah', images: [], categoryId: 1, campaignId: 1, isDemo: true }];
     const writes = [];
+    let invalidImport = true;
+    const imported = { id: 91, name: 'Toplu Keten Gömlek', details: 'Uzun kollu keten gömlek.', sizes: ['M','L'], total_qty: 4, price: '999.90', variant: 'Beyaz', images: [], categoryId: 1, campaignId: null, isDemo: false };
     const businessKeys = ['legalName','address','email','phone','returnAddress','taxOffice','taxNumber','mersis','kep','chamber','professionalRules','shippingFee','dispatchTime','deliveryTime'];
     const contentRows = ['business','about','privacy','distance-sales','delivery','returns'].map(slug => ({ slug, draft: slug === 'business' ? Object.fromEntries(businessKeys.map(k => [k, ''])) : { body: '' }, published: null, revision: 0, publishedAt: null, updatedAt: null }));
     const token = `header.${Buffer.from(JSON.stringify({ id: 1 })).toString('base64url')}.sig`;
@@ -33,6 +35,11 @@ const fs = require('node:fs/promises');
         assert.equal(req.headers().authorization, `Bearer ${token}`);
         writes.push({ path, method, body: req.postData() ?? '' });
         if (path.startsWith('/site-content/admin/')) { const row = contentRows.find(r => r.slug === path.split('/').pop()); const body = JSON.parse(req.postData()); row.draft = body.content; row.revision++; row.updatedAt = new Date().toISOString(); if (body.action === 'publish') { row.published = body.content; row.publishedAt = row.updatedAt; } if (body.action === 'unpublish') { row.published = null; row.publishedAt = null; } result = { data: row }; }
+        else if (path === '/product/bulk/preview') {
+          result = { valid: !invalidImport, count: 1, issueCount: invalidImport ? 1 : 0, issues: invalidImport ? [{ row: 2, field: 'price', reason: 'invalid' }] : [], rows: [{ row: 2, name: imported.name, sizes: imported.sizes, total_qty: 4, price: '999.90', variant: 'Beyaz' }] };
+        }
+        else if (path === '/product/bulk') { products.push({ ...imported }); result = { count: 1 }; }
+        else if (path === '/product/91' && method === 'PUT') { products.find(p => p.id === 91).images = ['uploaded.png']; result = { data: products.find(p => p.id === 91) }; }
         else if (path === '/category' && method === 'POST') { const item = { id: 2, ...JSON.parse(req.postData()) }; categories.push(item); result = { data: item }; }
         else if (path === '/product/1' && method === 'PUT') { products[0].name = 'Güncellenen Saten Elbise'; result = { data: products[0] }; }
         else if (path.startsWith('/product/') && method === 'DELETE') { products = products.filter(p => p.id !== Number(path.split('/')[2])); result = { message: 'deleted' }; }
@@ -56,6 +63,48 @@ const fs = require('node:fs/promises');
     await login();
     await page.getByRole('heading', { name: 'Her detay sizin elinizde.' }).waitFor();
     await page.getByRole('heading', { name: 'Saten Midi Elbise', exact: true }).waitFor();
+    // Bulk import: invalid preview cannot commit, changing fields invalidates
+    // preview, successful import selects the photo queue, editing adds images.
+    await page.getByRole('button', { name: 'Excel ile toplu ekle', exact: true }).click();
+    const dialog = page.getByRole('dialog');
+    const template = await page.request.get(`${base}/templates/kado-moda-urun-sablonu.xlsx`);
+    assert.equal(template.status(), 200);
+    assert.equal((await template.body()).subarray(0, 2).toString(), 'PK');
+    await dialog.getByLabel('Yüklenecek kategori').selectOption('1');
+    const ExcelJS = require('../../kadomodaAPI/node_modules/exceljs');
+    const book = new ExcelJS.Workbook(); await book.xlsx.load(await template.body());
+    book.getWorksheet('Urunler').getRow(2).values = [imported.name, imported.details, 'M, L', 4, 999.90, 'Beyaz'];
+    await dialog.getByLabel('Doldurulmuş Excel dosyası').setInputFiles({ name: 'products.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: Buffer.from(await book.xlsx.writeBuffer()) });
+    await dialog.getByRole('button', { name: 'Dosyayı ön izle' }).click();
+    await dialog.getByText('Satır 2, Fiyat:', { exact: true }).waitFor();
+    assert.equal(await dialog.getByRole('button', { name: 'Ürünleri ekle', exact: true }).isDisabled(), true);
+    assert.equal(writes.filter(w => w.path === '/product/bulk').length, 0);
+    invalidImport = false;
+    await dialog.getByRole('button', { name: 'Dosyayı ön izle' }).click();
+    await dialog.getByRole('heading', { name: '1 ürün eklenmeye hazır' }).waitFor();
+    await dialog.getByLabel('Kampanya (isteğe bağlı)').selectOption('1');
+    assert.equal(await dialog.getByRole('button', { name: 'Ürünleri ekle', exact: true }).isDisabled(), true);
+    await dialog.getByRole('button', { name: 'Dosyayı ön izle' }).click();
+    await dialog.getByRole('button', { name: '1 ürünü ekle', exact: true }).waitFor();
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await fs.mkdir('/private/tmp/kadomoda-stage2', { recursive: true });
+    await page.screenshot({ path: '/private/tmp/kadomoda-stage2/bulk-mobile.png', fullPage: true });
+    await dialog.getByRole('button', { name: '1 ürünü ekle', exact: true }).click();
+    await page.getByRole('heading', { name: imported.name, exact: true }).waitFor();
+    assert.equal(await page.getByLabel('Fotoğrafı eksik ürünler').isChecked(), true);
+    await page.getByRole('button', { name: imported.name + ': düzenle' }).click();
+    await dialog.getByText('Bu ürünün fotoğrafı henüz yok.', { exact: false }).waitFor();
+    await dialog.locator('input[type=file]').setInputFiles({ name: 'later-photo.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aLPsAAAAASUVORK5CYII=', 'base64') });
+    await dialog.getByRole('button', { name: 'Ürünü kaydet', exact: true }).click();
+    await page.getByRole('heading', { name: imported.name, exact: true }).waitFor({ state: 'hidden' });
+    assert.match(writes.find(w => w.path === '/product/91' && w.method === 'PUT').body, /filename="later-photo.png"/);
+    await page.getByLabel('Fotoğrafı eksik ürünler').uncheck();
+    await page.getByRole('button', { name: imported.name + ': sil' }).click();
+    await dialog.getByRole('button', { name: 'Kalıcı olarak sil' }).click();
+    await page.getByRole('heading', { name: imported.name, exact: true }).waitFor({ state: 'hidden' });
+    writes.splice(0, writes.length);
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await fs.mkdir('/private/tmp/kadomoda-stage2', { recursive: true });
     await page.screenshot({ path: '/private/tmp/kadomoda-stage2/admin-desktop.png', fullPage: true });
     await page.getByRole('button', { name: 'Saten Midi Elbise: düzenle' }).click();

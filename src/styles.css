@@ -361,6 +361,16 @@ summary { cursor:pointer; font-weight:600; }
 .admin-previews img { width:65px; height:85px; object-fit:cover; }
 .admin-form-actions { display:flex; justify-content:flex-end; gap:12px; padding-top:20px; border-top:1px solid var(--line); }
 .admin-danger { background:#922f27; color:white; border:1px solid #922f27; }
+.bulk-entry { display:flex; flex-wrap:wrap; align-items:center; gap:20px; margin-top:20px; }
+.bulk-inputs { border:0; padding:0; margin:0; min-width:0; }
+.bulk-file { height:auto; padding:12px; max-width:100%; }
+.bulk-preview { min-width:0; }
+.bulk-preview h3 { font-size:22px; }
+.bulk-preview li { margin-block:10px; }
+.bulk-table-wrap { overflow:auto; max-height:340px; }
+.bulk-table-wrap table { width:100%; border-collapse:collapse; font-size:13px; }
+.bulk-table-wrap th, .bulk-table-wrap td { padding:10px; text-align:left; border-bottom:1px solid var(--line); }
+.bulk-table-wrap th { position:sticky; top:0; background:var(--cream, #f7f4ef); white-space:nowrap; }
 @media(max-width:760px) {
   .admin-shell { padding-block:28px; }
   .admin-heading { align-items:flex-start; flex-direction:column; gap:16px; }

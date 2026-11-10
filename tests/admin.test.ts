@@ -3,7 +3,7 @@ import { loadProfile, productFormSchema, productPayload, validateImages } from '
 import { parseApiProducts } from '../src/lib/catalog';
 import { reconcileCart } from '../src/stores/shop';
 import { demoProducts } from '../src/data/products';
-import { apiRequest } from '../src/lib/api';
+import { ApiError, apiRequest } from '../src/lib/api';
 const values = { name: 'İpek Elbise', details: 'Uzun kollu ipek elbise.', sizesString: 'S, M, L', total_qty: '12', price: '1299,90', variant: 'Siyah', categoryId: '2', campaignId: '' };
 afterEach(() => vi.unstubAllGlobals());
 describe('Admin boundaries', () => {
@@ -58,6 +58,24 @@ it('refreshes cart prices and caps total stock after admin changes, preserving l
 });
 
 import { publicationErrors } from '../src/lib/siteContent';
+import { importPayload, validateImportFile, importError } from '../src/lib/productImport';
+it('validates Excel import files and sends selected category/campaign as multipart', () => {
+  const file = new File(['xlsx fixture'], 'products.xlsx');
+  expect(validateImportFile(file)).toBeNull();
+  expect(validateImportFile()).toBeTruthy();
+  expect(validateImportFile(new File(['csv'], 'products.csv'))).toBeTruthy();
+  expect(validateImportFile(new File([], 'products.xlsx'))).toBeTruthy();
+  expect(validateImportFile(new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'large.xlsx'))).toBeTruthy();
+  const body = importPayload(file, '12', '4');
+  expect(body.get('categoryId')).toBe('12');
+  expect(body.get('campaignId')).toBe('4');
+  expect(body.get('file')).toBe(file);
+  expect(importPayload(file, '12', '').has('campaignId')).toBe(false);
+});
+it('maps only known import error codes, never raw server text', () => {
+  expect(importError(new ApiError(400, 'safe fallback', { code: 'INVALID_COLUMNS', error: '<script>secret</script>' }))).toContain('sütun');
+  expect(importError(new ApiError(400, 'safe fallback', { code: 'UNKNOWN', error: '<script>secret</script>' }))).toBe('safe fallback');
+});
 it('blocks publishing incomplete policies and contact details', () => {
   expect(publicationErrors('privacy', { body: 'Short draft' })).toHaveProperty('body');
   expect(publicationErrors('privacy', { body: 'Approved policy text. '.repeat(8) })).toEqual({});

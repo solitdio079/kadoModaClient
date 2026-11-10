@@ -1,5 +1,5 @@
 export class ApiError extends Error {
-  constructor(public status: number, message: string) { super(message); }
+  constructor(public status: number, message: string, public payload?: unknown) { super(message); }
 }
 
 // Never render server text: it may be English, HTML, sensitive, or untrusted.
@@ -17,21 +17,24 @@ export function apiMessage(status: number, context: 'login' | 'general' = 'gener
   return 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
 }
 
-export async function apiRequest<T>(path: string, options: RequestInit & { token?: string; context?: 'login' | 'general' } = {}): Promise<T> {
-  const { token, context, ...init } = options;
+export async function apiRequest<T>(path: string, options: RequestInit & { token?: string; context?: 'login' | 'general'; timeoutMs?: number } = {}): Promise<T> {
+  const { token, context, timeoutMs = 15000, ...init } = options;
   const headers = new Headers(init.headers);
   if (init.body && !(init.body instanceof FormData)) headers.set('Content-Type', 'application/json');
   if (token) headers.set('Authorization', `Bearer ${token}`);
   let response: Response;
   try {
-    const timeout = AbortSignal.timeout(15000);
+    const timeout = AbortSignal.timeout(timeoutMs);
     const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
     response = await fetch(`/api${path}`, { ...init, headers, signal });
   } catch (error) {
     if (init.signal?.aborted) throw error;
     throw new ApiError(0, 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.');
   }
-  if (!response.ok) throw new ApiError(response.status, apiMessage(response.status, context));
+  if (!response.ok) {
+    const payload: unknown = await response.json().catch(() => null);
+    throw new ApiError(response.status, apiMessage(response.status, context), payload);
+  }
   try { return await response.json() as T; }
   catch { throw new ApiError(0, 'Sunucudan beklenmeyen bir yanıt alındı. Lütfen tekrar deneyin.'); }
 }

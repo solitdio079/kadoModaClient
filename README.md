@@ -204,3 +204,30 @@ page, check its footer link/content from a logged-out browser; save a revised dr
 and verify the previous public version remains; test unpublishing. Complete the
 remaining merchant requirements in IYZICO-READINESS.md before requesting review.
 Payment integration and customer-account features are still subsequent stages.
+
+## Excel product import
+
+At `/yonetim`, choose **Excel ile toplu ekle** and download the Excel template.
+Fill `Urunler` from row 2, keeping these column headers:
+`name`, `details`, `sizes`, `total_qty`, `price`, `variant`.
+The `Kullanim` sheet explains each field and is never imported. The template is
+blank so example products cannot be added accidentally.
+
+Choose one category and optional campaign for the entire upload. Use separate
+uploads for different categories. Preview the file, correct any reported row and
+field errors, then confirm. The limit is 1000 rows / 5 MB. Prices accept numeric
+Excel cells or decimal text with a comma or dot, without thousands separators.
+Sizes use commas. Formulas, dates, hyperlinks, and invalid fields are rejected.
+
+No products are saved when a row fails. An import only creates products; it never
+updates existing ones. Duplicate names and colors within the selected category
+are rejected, including a repeat upload after a lost response.
+
+After import the **Fotoğrafı eksik ürünler** filter is selected. Choose **Düzenle**,
+select photos, and save each product. Products without photos are visible in the
+live catalog with a placeholder until photos are added. Existing product images
+are preserved when no replacement files are selected.
+
+This change requires deploying both this frontend and the matching API changes.
+No schema migration or new dependency is needed. The template is served from
+`public/templates/kado-moda-urun-sablonu.xlsx` and included in production builds.
