@@ -1,0 +1,92 @@
+// All API traffic is mocked. Requires Playwright on NODE_PATH and running Vite.
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const reference = require('../src/data/reference-categories.json');
+
+(async () => {
+  const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome' });
+  try {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+    const ids = new Map(reference.categories.map((c, i) => [c.slug, i + 1]));
+    const categories = reference.categories.map(c => ({ ...c, id: ids.get(c.slug), parentId: c.parentSlug ? ids.get(c.parentSlug) : null }));
+    const leaves = ['ust-giyim/t-shirt/oversize', 'ust-giyim/gomlek/oversize', 'ust-giyim/elbise/mini', 'alt-giyim/etek/mini'];
+    const products = leaves.map((slug, i) => ({ id: i + 1, name: ['Oversize Tişört', 'Oversize Gömlek', 'Mini Elbise', 'Mini Etek'][i], details: 'Kategori gezintisi için test ürünü.', sizes: ['M'], total_qty: 3, price: '900', images: [], variant: 'Siyah', categoryId: ids.get(slug), category: categories.find(c => c.slug === slug), campaign: null, campaignId: null, isDemo: false }));
+    const writes = [];
+    const token = `head.${Buffer.from(JSON.stringify({ id: 1 })).toString('base64url')}.sig`;
+    await context.route('**/api/**', async route => {
+      const req = route.request(), path = new URL(req.url()).pathname.replace('/api', '');
+      let result = { data: [] };
+      if (path === '/auth/login') result = { token };
+      else if (path === '/users/1') result = { data: { id: 1, name: 'Kategori Yönetici', email: 'admin@example.test', role: 'ADMIN' } };
+      else if (path === '/category' && req.method() === 'POST') { const body = JSON.parse(req.postData()); writes.push(body); const created = { id: 100, slug: null, sortOrder: 0, ...body }; categories.push(created); result = { data: created }; }
+      else if (path === '/category') result = { data: categories };
+      else if (path === '/product') result = { data: products };
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(result) });
+    });
+    const page = await context.newPage();
+    const errors = []; page.on('pageerror', e => errors.push(e.message));
+    const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:5173';
+    await page.goto(base);
+    const nav = page.getByRole('navigation', { name: 'Koleksiyonlar', exact: true });
+    const upper = nav.getByRole('button', { name: 'Üst Giyim', exact: true });
+    await upper.hover();
+    const panel = page.getByRole('region', { name: 'Üst Giyim alt kategorileri', exact: true });
+    await panel.waitFor();
+    assert.equal(await upper.getAttribute('aria-expanded'), 'true');
+    const links = await page.locator('.desktop-categories a[href*="kategoriId="]').evaluateAll(nodes => nodes.map(n => new URL(n.href).searchParams.get('kategoriId')));
+    for (const c of categories) assert.ok(links.includes(String(c.id)), `Missing menu category ${c.slug}`);
+    await fs.mkdir('/private/tmp/kadomoda-categories', { recursive: true });
+    await page.screenshot({ path: '/private/tmp/kadomoda-categories/mega-desktop.png' });
+    const tshirt = panel.locator('section').filter({ has: page.getByRole('heading', { name: 'T-shirt', exact: true }) });
+    await tshirt.getByRole('link', { name: 'OVERSIZE', exact: true }).click();
+    await page.getByRole('heading', { name: 'Oversize Tişört', exact: true }).waitFor();
+    assert.equal(await page.locator('.product-card').count(), 1);
+    assert.equal(await upper.getAttribute('aria-expanded'), 'false');
+    await upper.focus(); await page.keyboard.press('ArrowDown');
+    await panel.waitFor();
+    assert.equal(await panel.getByRole('link', { name: 'Tüm Üst Giyim', exact: true }).evaluate(el => document.activeElement === el), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await upper.getAttribute('aria-expanded'), 'false');
+    assert.equal(await upper.evaluate(el => document.activeElement === el), true);
+    await upper.hover(); await panel.getByRole('link', { name: 'Tüm Üst Giyim', exact: true }).click();
+    await page.getByRole('heading', { name: 'Mini Elbise', exact: true }).waitFor();
+    assert.equal(await page.locator('.product-card').count(), 3);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole('button', { name: 'Menüyü aç', exact: true }).click();
+    const drawer = page.getByRole('dialog');
+    await drawer.locator('summary').filter({ hasText: /^Üst Giyim$/ }).click();
+    await drawer.locator('summary').filter({ hasText: /^Gömlek$/ }).click();
+    await page.screenshot({ path: '/private/tmp/kadomoda-categories/menu-mobile.png' });
+    await drawer.getByRole('link', { name: 'OVERSIZE', exact: true }).click();
+    await page.getByRole('heading', { name: 'Oversize Gömlek', exact: true }).waitFor();
+    assert.equal(await page.locator('.product-card').count(), 1);
+    assert.equal(await drawer.isVisible(), false);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.getByLabel('Kategori ve alt kategori').selectOption(String(ids.get('alt-giyim/etek/mini')));
+    await page.getByRole('heading', { name: 'Mini Etek', exact: true }).waitFor();
+    assert.equal(await page.locator('.product-card').count(), 1);
+    await page.setViewportSize({ width: 900, height: 1000 });
+    assert.equal(await page.getByRole('button', { name: 'Menüyü aç', exact: true }).isVisible(), true);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    // Real login UI, then category creation with a selected parent, and full
+    // category paths in the existing Excel bulk import selector.
+    await page.goto(`${base}/hesabim`);
+    await page.getByLabel('E-posta adresi', { exact: true }).fill('admin@example.test');
+    await page.getByLabel('Şifre', { exact: true }).fill('test-password');
+    await page.getByRole('button', { name: 'Giriş yap', exact: true }).click();
+    await page.getByRole('link', { name: 'Kategoriler', exact: true }).click();
+    await page.getByRole('button', { name: 'Yeni kategori', exact: true }).click();
+    await drawer.getByLabel('Kategori adı').fill('Yeni alt kategori');
+    await drawer.getByLabel('Üst kategori', { exact: true }).selectOption(String(ids.get('ust-giyim/gomlek')));
+    await drawer.getByRole('button', { name: 'Kaydet', exact: true }).click();
+    await page.getByRole('heading', { name: 'Yeni alt kategori', exact: true }).waitFor();
+    assert.equal(writes[0].parentId, ids.get('ust-giyim/gomlek'));
+    await page.getByRole('link', { name: 'Ürünler', exact: true }).click();
+    await page.getByRole('button', { name: 'Excel ile toplu ekle', exact: true }).click();
+    const option = await drawer.getByLabel('Yüklenecek kategori').locator(`option[value="${ids.get('ust-giyim/gomlek/oversize')}"]`).textContent();
+    assert.equal(option, 'Üst Giyim / Gömlek / OVERSIZE');
+    assert.deepEqual(errors, []);
+    console.log('PASS: 63 categories, desktop hover and keyboard, parent/leaf filtering, mobile accordion, tablet layout, parent editing and bulk-import paths. All API traffic mocked.');
+  } finally { await browser.close(); }
+})().catch(e => { console.error(e); process.exitCode = 1; });

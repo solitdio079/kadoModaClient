@@ -4,7 +4,7 @@ export const productSchema = z.object({
   id: z.number().int(), name: z.string(), details: z.string(),
   sizes: z.array(z.string()), stock: z.number().int().nonnegative(),
   price: z.number().int().nonnegative(), // integer kuruş, never floating-point totals
-  images: z.array(z.string()).min(1), category: z.string(), color: z.string(),
+  images: z.array(z.string()).min(1), category: z.string(), categoryId: z.number().int().optional(), color: z.string(),
   originalPrice: z.number().int().nonnegative().optional(), label: z.string().optional(), demo: z.boolean(),
 });
 export type Product = z.infer<typeof productSchema>;
@@ -31,6 +31,7 @@ const apiProductSchema = z.object({
   id: z.number().int(), name: z.string(), details: z.string(), sizes: z.array(z.string()),
   total_qty: z.number().int().nonnegative(), price: z.union([z.string(), z.number()]),
   images: z.array(z.string()), variant: z.string(),
+  categoryId: z.number().int().optional(),
   category: z.object({ name: z.string() }).nullable().optional(),
   campaign: z.object({ name: z.string(), discount: z.number().int().min(0).max(100) }).nullable().optional(),
   isDemo: z.boolean().optional(),
@@ -48,7 +49,7 @@ export function parseApiProducts(body: unknown): Product[] {
         if (/^https:\/\//.test(image)) return image;
         return `/api/${encodeURIComponent(image)}`;
       }) : ['/assets/product-placeholder.svg'],
-      category: p.category?.name ?? 'Koleksiyon', color: p.variant, demo: false,
+      category: p.category?.name ?? 'Koleksiyon', categoryId: p.categoryId, color: p.variant, demo: false,
     };
   });
 }

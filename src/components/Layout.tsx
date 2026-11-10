@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,9 +7,10 @@ import { Heart, Menu, Search, ShoppingBag, UserRound, X, ArrowUpRight } from 'lu
 import { useShop } from '../stores/shop';
 import { contentPages, useSiteContent } from '../lib/siteContent';
 import { useSession } from '../stores/session';
-import { isDemo } from '../lib/CatalogProvider';
+import { isDemo, useCatalog } from '../lib/CatalogProvider';
+import { CategoryMenu, MobileCategories } from './CategoryMenu';
+import { categoryTree, categoryHref } from '../lib/categories';
 
-export const departments = ['Elbiseler', 'Ceketler', 'Üst Giyim', 'Takımlar', 'Dış Giyim', 'Aksesuar'];
 export const categoryLink = (name: string) => `/koleksiyon?kategori=${encodeURIComponent(name)}`;
 
 export function Logo() {
@@ -31,6 +32,7 @@ function SearchForm() {
 
 export function Layout() {
   const location = useLocation();
+  const { categories } = useCatalog();
   const site = useSiteContent();
   const profile = useSession(s => s.profile);
   const menu = useRef<HTMLDialogElement>(null);
@@ -59,20 +61,16 @@ export function Layout() {
           <Link to="/sepetim" className="header-action" aria-label={`Sepetim (${count})`}><ShoppingBag size={21} /><span>Sepetim</span><b className="count">{count}</b></Link>
         </div>
       </div>
-      <nav className="department-nav shell" aria-label="Koleksiyonlar">
-        <NavLink to="/koleksiyon" end>Kadın</NavLink>
-        <Link to="/koleksiyon?secim=yeni">Yeni Gelenler</Link>
-        {departments.map(name => <Link key={name} to={categoryLink(name)}>{name}</Link>)}
-      </nav>
+      <CategoryMenu />
     </header>
     <dialog ref={menu} className="menu-dialog" aria-labelledby="menu-title" onClick={e => { if (e.target === e.currentTarget) menu.current?.close(); }}>
       <div className="menu-inner"><div className="menu-top"><strong id="menu-title">Koleksiyonlar</strong><button className="icon-button" aria-label="Menüyü kapat" onClick={() => menu.current?.close()}><X /></button></div>
         <Link to="/koleksiyon">Tüm Koleksiyon</Link><Link to="/koleksiyon?secim=yeni">Yeni Gelenler</Link>
-        {departments.map(name => <Link key={name} to={categoryLink(name)}>{name}<ArrowUpRight size={17} /></Link>)}
+        <MobileCategories key={location.key} />
         <Link to="/favorilerim">Favorilerim</Link><Link to="/hesabim">Hesabım</Link>{profile?.role === 'ADMIN' && <Link to="/yonetim">Mağaza yönetimi</Link>}
       </div>
     </dialog>
     <main id="main" ref={main} tabIndex={-1}><Outlet /></main>
-    <footer className="footer"><div className="shell footer-grid"><div><Logo /><p>Zamansız bir duruş.<br />Kendinize ait bir stil.</p></div><div><h2>Koleksiyonu keşfedin</h2><Link to="/koleksiyon">Tüm ürünler</Link><Link to={categoryLink('Elbiseler')}>Elbiseler</Link><Link to={categoryLink('Ceketler')}>Ceketler</Link><Link to={categoryLink('Üst Giyim')}>Üst giyim</Link></div><div><h2>Size yardımcı olalım</h2><Link to="/hesabim">Hesabım</Link><Link to="/favorilerim">Favorilerim</Link><Link to="/iletisim">İletişim</Link>{site.records.filter(r => r.slug !== 'business').map(r => { const page = contentPages[r.slug as keyof typeof contentPages]; return <Link key={r.slug} to={page.path}>{page.title}</Link>; })}<Link to="/yardim">Yardım</Link></div><div className="footer-note"><span className="eyebrow">KADO MODA BUTİK</span><p>Günün her anına eşlik eden,<br />özenle seçilmiş parçalar.</p><Link to="/koleksiyon" className="text-link">Koleksiyona göz atın <ArrowUpRight size={16} /></Link></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} Kado Moda Butik</span><span>Türkiye · Türkçe · ₺ TRY</span></div></footer>
+    <footer className="footer"><div className="shell footer-grid"><div><Logo /><p>Zamansız bir duruş.<br />Kendinize ait bir stil.</p></div><div><h2>Koleksiyonu keşfedin</h2><Link to="/koleksiyon">Tüm ürünler</Link>{categoryTree(categories).slice(0, 5).map(c => <Link key={c.id} to={categoryHref(c)}>{c.name}</Link>)}</div><div><h2>Size yardımcı olalım</h2><Link to="/hesabim">Hesabım</Link><Link to="/favorilerim">Favorilerim</Link><Link to="/iletisim">İletişim</Link>{site.records.filter(r => r.slug !== 'business').map(r => { const page = contentPages[r.slug as keyof typeof contentPages]; return <Link key={r.slug} to={page.path}>{page.title}</Link>; })}<Link to="/yardim">Yardım</Link></div><div className="footer-note"><span className="eyebrow">KADO MODA BUTİK</span><p>Günün her anına eşlik eden,<br />özenle seçilmiş parçalar.</p><Link to="/koleksiyon" className="text-link">Koleksiyona göz atın <ArrowUpRight size={16} /></Link></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} Kado Moda Butik</span><span>Türkiye · Türkçe · ₺ TRY</span></div></footer>
   </>;
 }

@@ -231,3 +231,34 @@ are preserved when no replacement files are selected.
 This change requires deploying both this frontend and the matching API changes.
 No schema migration or new dependency is needed. The template is served from
 `public/templates/kado-moda-urun-sablonu.xlsx` and included in production builds.
+
+## Nested categories and mega menu
+
+The category hierarchy follows the public homepage navigation at
+https://www.behicesaglam.com/ inspected on 2026-11-10. The checked-in snapshot is
+`src/data/reference-categories.json`: 63 category records across six roots,
+including the `500TL` collection. `Yeni Gelenler` remains the product listing link,
+not a duplicated category. “Tüm …” links browse their parent category; they do not
+create duplicate records. No source products, images, prices, or policies are copied.
+
+Live menus use `/category` data (including categories with no products), not a
+hard-coded name list. Desktop uses an accessible disclosure mega menu with hover,
+click, ArrowDown, Tab, and Escape. Mobile/tablet uses nested native accordions in
+the drawer and direct department links above the catalog. Menu links use
+`kategoriId` so repeated labels such as `OVERSIZE`, `DENİM`, and `MİNİ` stay distinct.
+Parent category pages include all descendant products. Legacy name links remain
+supported, including Elbiseler, Ceketler, Etekler, and Takımlar.
+
+Category administration supports choosing a parent, while product and Excel import
+selectors show full paths. Category cards show their path and descendant product
+counts. Parents with children or products cannot be deleted until those records
+are moved or removed. Existing category IDs and product assignments are preserved
+by the API migration wherever matching names/legacy aliases can be adopted.
+
+Deploy the matching API first (migration `20261110000000_category_hierarchy`), then
+this frontend. The API container applies pending migrations on startup. No manual
+category seeding is needed. Static demo mode uses the same reference hierarchy.
+
+Verification: `npm run check`; `tests/categories.browser.cjs` and
+`tests/admin.browser.cjs` with Playwright on NODE_PATH and a local Vite server.
+Both browser suites mock all API requests and never change the live store.

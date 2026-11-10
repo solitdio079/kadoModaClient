@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { apiRequest } from './api';
+import { categorySchema } from './categories';
+export { categorySchema } from './categories';
 
 const id = z.number().int().positive();
-export const categorySchema = z.object({ id, name: z.string() });
-export const campaignSchema = categorySchema.extend({ discount: z.number().int().min(0).max(100), image: z.string().nullable().optional() });
+export const campaignSchema = z.object({ id, name: z.string(), discount: z.number().int().min(0).max(100), image: z.string().nullable().optional() });
 export const adminProductSchema = z.object({
   id, name: z.string(), details: z.string(), sizes: z.array(z.string()),
   total_qty: z.number().int().nonnegative(), price: z.union([z.string(), z.number()]).transform(String),

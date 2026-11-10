@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Download, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { Modal } from './Editors';
+import { categoryOptions, categoryLabel } from '../../lib/categories';
 import { ApiError } from '../../lib/api';
 import type { Category, Campaign } from '../../lib/admin';
 import { commitImport, previewImport, importPayload, validateImportFile, importError, importLabels, importReasons, importPreviewSchema, type ImportPreview } from '../../lib/productImport';
@@ -42,7 +43,7 @@ export function BulkUpload({ token, categories, campaigns, close, saved }: { tok
       <p className="notice">Her dosya tek kategoriye eklenir. Farklı kategoriler için ayrı yükleme yapın. En fazla 1000 ürün ve 5 MB. Mevcut ürünler güncellenmez. Fotoğrafsız ürünler mağazada yer tutucu görselle görünür.</p>
       <fieldset disabled={busy} className="admin-fields bulk-inputs">
         <div className="admin-form-grid">
-          <div className="admin-field"><label htmlFor="bulk-category">Yüklenecek kategori</label><select id="bulk-category" className="select" value={categoryId} onChange={e => { setCategoryId(e.target.value); reset(); }}><option value="">Kategori seçin</option>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
+          <div className="admin-field"><label htmlFor="bulk-category">Yüklenecek kategori</label><select id="bulk-category" className="select" value={categoryId} onChange={e => { setCategoryId(e.target.value); reset(); }}><option value="">Kategori seçin</option>{categoryOptions(categories).map(c => <option key={c.id} value={c.id}>{categoryLabel(categories, c.id)}</option>)}</select></div>
           <div className="admin-field"><label htmlFor="bulk-campaign">Kampanya (isteğe bağlı)</label><select id="bulk-campaign" className="select" value={campaignId} onChange={e => { setCampaignId(e.target.value); reset(); }}><option value="">Kampanya yok</option>{campaigns.map(c => <option key={c.id} value={c.id}>{c.name} · %{c.discount}</option>)}</select></div>
         </div>
         <div className="admin-field"><label htmlFor="bulk-file">Doldurulmuş Excel dosyası</label><input id="bulk-file" className="input bulk-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={e => { setFile(e.target.files?.[0]); reset(); }} /></div>

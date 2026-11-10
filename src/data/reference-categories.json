@@ -1,0 +1,447 @@
+{
+  "source": "https://www.behicesaglam.com/",
+  "checkedAt": "2026-11-10",
+  "categories": [
+    {
+      "slug": "ust-giyim",
+      "parentSlug": null,
+      "name": "Üst Giyim",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-ust-giyim-modelleri"
+    },
+    {
+      "slug": "ust-giyim/bluz",
+      "parentSlug": "ust-giyim",
+      "name": "Bluz",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-bluz-modelleri"
+    },
+    {
+      "slug": "ust-giyim/t-shirt",
+      "parentSlug": "ust-giyim",
+      "name": "T-shirt",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-t-shirt-modelleri"
+    },
+    {
+      "slug": "ust-giyim/t-shirt/oversize",
+      "parentSlug": "ust-giyim/t-shirt",
+      "name": "OVERSIZE",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/oversize-3273"
+    },
+    {
+      "slug": "ust-giyim/elbise",
+      "parentSlug": "ust-giyim",
+      "name": "Elbise",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-elbise-modelleri"
+    },
+    {
+      "slug": "ust-giyim/elbise/mini",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "MİNİ",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-mini-elbise-modelleri"
+    },
+    {
+      "slug": "ust-giyim/elbise/maxi",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "MAXİ",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-maxi-elbise-modelleri"
+    },
+    {
+      "slug": "ust-giyim/elbise/midi",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "MİDİ",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-midi-elbise-modelleri"
+    },
+    {
+      "slug": "ust-giyim/elbise/fitilli-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Fitilli Elbise",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/fitilli-elbise/"
+    },
+    {
+      "slug": "ust-giyim/elbise/gunluk-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Günlük Elbise",
+      "sortOrder": 4,
+      "sourceUrl": "https://www.behicesaglam.com/gunluk-elbise"
+    },
+    {
+      "slug": "ust-giyim/elbise/desenli-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Desenli Elbise",
+      "sortOrder": 5,
+      "sourceUrl": "https://www.behicesaglam.com/desenli-elbise"
+    },
+    {
+      "slug": "ust-giyim/elbise/askili-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Askılı Elbise",
+      "sortOrder": 6,
+      "sourceUrl": "https://www.behicesaglam.com/askili-elbise"
+    },
+    {
+      "slug": "ust-giyim/elbise/v-yaka-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "V Yaka Elbise",
+      "sortOrder": 7,
+      "sourceUrl": "https://www.behicesaglam.com/v-yaka-elbise"
+    },
+    {
+      "slug": "ust-giyim/elbise/siyah-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Siyah Elbise",
+      "sortOrder": 8,
+      "sourceUrl": "https://www.behicesaglam.com/siyah-elbise"
+    },
+    {
+      "slug": "ust-giyim/elbise/davet-elbisesi",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Davet Elbisesi",
+      "sortOrder": 9,
+      "sourceUrl": "https://www.behicesaglam.com/davet-elbisesi"
+    },
+    {
+      "slug": "ust-giyim/elbise/dekolteli-elbise",
+      "parentSlug": "ust-giyim/elbise",
+      "name": "Dekolteli Elbise",
+      "sortOrder": 10,
+      "sourceUrl": "https://www.behicesaglam.com/dekolteli-elbise"
+    },
+    {
+      "slug": "ust-giyim/gomlek",
+      "parentSlug": "ust-giyim",
+      "name": "Gömlek",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-gomlek-modelleri"
+    },
+    {
+      "slug": "ust-giyim/gomlek/oversize",
+      "parentSlug": "ust-giyim/gomlek",
+      "name": "OVERSIZE",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-oversize-spor-gomlek-modelleri"
+    },
+    {
+      "slug": "ust-giyim/gomlek/saten-gomlek",
+      "parentSlug": "ust-giyim/gomlek",
+      "name": "Saten Gömlek",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/saten-gomlek"
+    },
+    {
+      "slug": "ust-giyim/triko-kazak",
+      "parentSlug": "ust-giyim",
+      "name": "Triko&Kazak",
+      "sortOrder": 4,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-triko-kazak"
+    },
+    {
+      "slug": "alt-giyim",
+      "parentSlug": null,
+      "name": "Alt Giyim",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-alt-giyim-modelleri"
+    },
+    {
+      "slug": "alt-giyim/sort",
+      "parentSlug": "alt-giyim",
+      "name": "Şort",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-sort-modelleri"
+    },
+    {
+      "slug": "alt-giyim/sort/denim",
+      "parentSlug": "alt-giyim/sort",
+      "name": "DENİM",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-denim-sort-modelleri"
+    },
+    {
+      "slug": "alt-giyim/sort/mini",
+      "parentSlug": "alt-giyim/sort",
+      "name": "MİNİ",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/mini"
+    },
+    {
+      "slug": "alt-giyim/pantolon",
+      "parentSlug": "alt-giyim",
+      "name": "Pantolon",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-pantolon-modelleri"
+    },
+    {
+      "slug": "alt-giyim/jean-pantolon",
+      "parentSlug": "alt-giyim",
+      "name": "Jean Pantolon",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-jean-pantolon-modelleri"
+    },
+    {
+      "slug": "alt-giyim/jean-pantolon/straight-fit",
+      "parentSlug": "alt-giyim/jean-pantolon",
+      "name": "STRAIGHT FIT",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-straight-fit-pantolon-modelleri"
+    },
+    {
+      "slug": "alt-giyim/jean-pantolon/mom-fit",
+      "parentSlug": "alt-giyim/jean-pantolon",
+      "name": "MOM FIT",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-mom-fit-pantolon-modelleri"
+    },
+    {
+      "slug": "alt-giyim/jean-pantolon/distressed-jean",
+      "parentSlug": "alt-giyim/jean-pantolon",
+      "name": "DISTRESSED JEAN",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/distressed-jean"
+    },
+    {
+      "slug": "alt-giyim/etek",
+      "parentSlug": "alt-giyim",
+      "name": "Etek",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-etek-modelleri"
+    },
+    {
+      "slug": "alt-giyim/etek/mini",
+      "parentSlug": "alt-giyim/etek",
+      "name": "MİNİ",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-mini-etek-modelleri"
+    },
+    {
+      "slug": "alt-giyim/etek/midi",
+      "parentSlug": "alt-giyim/etek",
+      "name": "MİDİ",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/midi"
+    },
+    {
+      "slug": "alt-giyim/etek/maxi",
+      "parentSlug": "alt-giyim/etek",
+      "name": "MAXİ",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/maxi"
+    },
+    {
+      "slug": "alt-giyim/etek/kot-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Kot Etek",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kot-etek"
+    },
+    {
+      "slug": "alt-giyim/etek/saten-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Saten Etek",
+      "sortOrder": 4,
+      "sourceUrl": "https://www.behicesaglam.com/saten-etek"
+    },
+    {
+      "slug": "alt-giyim/etek/pileli-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Pileli Etek",
+      "sortOrder": 5,
+      "sourceUrl": "https://www.behicesaglam.com/pileli-etek"
+    },
+    {
+      "slug": "alt-giyim/etek/cingene-etegi",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Çingene Eteği",
+      "sortOrder": 6,
+      "sourceUrl": "https://www.behicesaglam.com/cingene-etegi"
+    },
+    {
+      "slug": "alt-giyim/etek/desenli-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Desenli Etek",
+      "sortOrder": 7,
+      "sourceUrl": "https://www.behicesaglam.com/desenli-etek"
+    },
+    {
+      "slug": "alt-giyim/etek/sort-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Şort Etek",
+      "sortOrder": 8,
+      "sourceUrl": "https://www.behicesaglam.com/sort-etek-990"
+    },
+    {
+      "slug": "alt-giyim/etek/payetli-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Payetli Etek",
+      "sortOrder": 9,
+      "sourceUrl": "https://www.behicesaglam.com/payetli-etek-2004"
+    },
+    {
+      "slug": "alt-giyim/etek/mini-etek",
+      "parentSlug": "alt-giyim/etek",
+      "name": "Mini etek",
+      "sortOrder": 10,
+      "sourceUrl": "https://www.behicesaglam.com/mini-etek"
+    },
+    {
+      "slug": "dis-giyim",
+      "parentSlug": null,
+      "name": "Dış Giyim",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-dis-giyim-modelleri"
+    },
+    {
+      "slug": "dis-giyim/ceket",
+      "parentSlug": "dis-giyim",
+      "name": "Ceket",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-ceket-modelleri"
+    },
+    {
+      "slug": "dis-giyim/ceket/denim",
+      "parentSlug": "dis-giyim/ceket",
+      "name": "DENİM",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-denim-ceket-modelleri"
+    },
+    {
+      "slug": "dis-giyim/ceket/deri",
+      "parentSlug": "dis-giyim/ceket",
+      "name": "DERİ",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-deri-ceket-modelleri"
+    },
+    {
+      "slug": "dis-giyim/ceket/blazer",
+      "parentSlug": "dis-giyim/ceket",
+      "name": "BLAZER",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-spor-blazer-ceket-modelleri"
+    },
+    {
+      "slug": "dis-giyim/mont",
+      "parentSlug": "dis-giyim",
+      "name": "Mont",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-mont-modelleri"
+    },
+    {
+      "slug": "dis-giyim/mont/deri",
+      "parentSlug": "dis-giyim/mont",
+      "name": "DERİ",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/deri"
+    },
+    {
+      "slug": "dis-giyim/mont/mevsimlik-mont",
+      "parentSlug": "dis-giyim/mont",
+      "name": "Mevsimlik Mont",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/mevsimlik-mont"
+    },
+    {
+      "slug": "dis-giyim/kaban",
+      "parentSlug": "dis-giyim",
+      "name": "Kaban",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-kaban-modelleri"
+    },
+    {
+      "slug": "dis-giyim/hirka",
+      "parentSlug": "dis-giyim",
+      "name": "Hırka",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-hirka-modelleri"
+    },
+    {
+      "slug": "dis-giyim/hirka/triko-hirka",
+      "parentSlug": "dis-giyim/hirka",
+      "name": "Triko Hırka",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/triko-hirka"
+    },
+    {
+      "slug": "dis-giyim/trenc",
+      "parentSlug": "dis-giyim",
+      "name": "Trenç",
+      "sortOrder": 4,
+      "sourceUrl": "https://www.behicesaglam.com/trenc"
+    },
+    {
+      "slug": "dis-giyim/yelek",
+      "parentSlug": "dis-giyim",
+      "name": "Yelek",
+      "sortOrder": 5,
+      "sourceUrl": "https://www.behicesaglam.com/yelek-1331"
+    },
+    {
+      "slug": "aksesuar",
+      "parentSlug": null,
+      "name": "Aksesuar",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-aksesuar-modelleri"
+    },
+    {
+      "slug": "aksesuar/kemer",
+      "parentSlug": "aksesuar",
+      "name": "Kemer",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/kadin-kemer-aksesuar-modelleri"
+    },
+    {
+      "slug": "aksesuar/sal",
+      "parentSlug": "aksesuar",
+      "name": "Şal",
+      "sortOrder": 1,
+      "sourceUrl": "https://www.behicesaglam.com/sal"
+    },
+    {
+      "slug": "aksesuar/bere",
+      "parentSlug": "aksesuar",
+      "name": "Bere",
+      "sortOrder": 2,
+      "sourceUrl": "https://www.behicesaglam.com/bere"
+    },
+    {
+      "slug": "aksesuar/kolye",
+      "parentSlug": "aksesuar",
+      "name": "Kolye",
+      "sortOrder": 3,
+      "sourceUrl": "https://www.behicesaglam.com/kolye"
+    },
+    {
+      "slug": "takim",
+      "parentSlug": null,
+      "name": "Takım",
+      "sortOrder": 4,
+      "sourceUrl": "https://www.behicesaglam.com/takim-1217"
+    },
+    {
+      "slug": "takim/takim",
+      "parentSlug": "takim",
+      "name": "Takım",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/takim-3726"
+    },
+    {
+      "slug": "takim/takim/blazer",
+      "parentSlug": "takim/takim",
+      "name": "BLAZER",
+      "sortOrder": 0,
+      "sourceUrl": "https://www.behicesaglam.com/blazer-1190"
+    },
+    {
+      "slug": "500tl",
+      "parentSlug": null,
+      "name": "500TL",
+      "sortOrder": 5,
+      "sourceUrl": "https://www.behicesaglam.com/500tl"
+    }
+  ]
+}

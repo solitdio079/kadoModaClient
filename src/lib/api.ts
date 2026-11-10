@@ -33,7 +33,13 @@ export async function apiRequest<T>(path: string, options: RequestInit & { token
   }
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
-    throw new ApiError(response.status, apiMessage(response.status, context), payload);
+    const categoryMessages: Record<string, string> = {
+      CATEGORY_IN_USE: 'Önce bu kategorinin alt kategorilerini ve ürünlerini taşıyın veya kaldırın.',
+      CATEGORY_CYCLE: 'Bir kategori kendisinin veya alt kategorisinin altına taşınamaz.',
+      INVALID_CATEGORY_PARENT: 'Üst kategori artık mevcut değil. Listeyi yenileyip tekrar seçin.',
+    };
+    const code = payload && typeof payload === 'object' && 'code' in payload && typeof payload.code === 'string' ? payload.code : '';
+    throw new ApiError(response.status, categoryMessages[code] ?? apiMessage(response.status, context), payload);
   }
   try { return await response.json() as T; }
   catch { throw new ApiError(0, 'Sunucudan beklenmeyen bir yanıt alındı. Lütfen tekrar deneyin.'); }

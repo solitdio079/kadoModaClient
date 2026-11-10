@@ -51,7 +51,48 @@ main:focus { outline:none; }
 .department-nav { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:49px; border-top:1px solid #eee; overflow:auto; white-space:nowrap; scrollbar-width:none; }
 .department-nav a { display:block; font-size:12px; font-weight:600; padding:14px 4px; }
 .department-nav a:hover { color:var(--gold); }
+.header { position:relative; z-index:20; }
+.desktop-categories { overflow:visible; }
+.department-trigger > button { display:flex; align-items:center; gap:7px; border:0; background:none; font-size:12px; font-weight:600; padding:16px 4px; min-height:49px; }
+.department-trigger > button:hover,.department-trigger > button[aria-expanded=true] { color:var(--gold); }
+.category-mega { position:absolute; top:100%; left:0; right:0; background:white; border-top:1px solid var(--line); border-bottom:1px solid var(--line); box-shadow:0 18px 24px #17171712; white-space:normal; max-height:min(620px,75dvh); overflow-y:auto; z-index:30; }
+.category-mega[hidden] { display:none; }
+.category-mega-inner { display:grid; grid-template-columns:210px 1fr; padding-block:30px; gap:36px; }
+.category-mega-intro { border-right:1px solid var(--line); padding-right:24px; }
+.category-mega-intro .eyebrow { color:var(--gold); font-size:9px; }
+.category-mega-intro h2 { font-family:'Playfair Display',serif; font-size:30px; margin:12px 0; font-weight:500; }
+.category-mega-intro p { color:var(--muted); font-size:12px; line-height:1.7; }
+.category-mega-intro a.text-link { display:inline-flex; padding:5px 0; margin-top:20px; }
+.category-mega-columns { display:grid; grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:22px; align-content:start; }
+.category-mega-group h3 { margin:0 0 10px; font-size:14px; }
+.category-mega .category-mega-group h3 a { font-size:14px; font-weight:700; color:var(--ink); padding:0 0 10px; border-bottom:1px solid var(--line); }
+.category-mega-group ul { list-style:none; padding:0; margin:0; }
+.category-mega-group ul ul { padding-left:12px; }
+.category-mega .category-mega-group a { padding:5px 0; font-size:12px; font-weight:400; line-height:1.5; }
+.category-mega .category-mega-group .category-see-all { color:var(--gold); font-weight:600; margin-bottom:5px; }
+.category-mega-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--line); padding-block:14px; font-size:11px; color:var(--muted); }
+.category-mega-footer button { border:0; background:none; padding:10px; font:inherit; text-decoration:underline; }
+.mobile-departments { display:none; }
+.mobile-category-branch { border-bottom:1px solid var(--line); }
+.mobile-category-branch summary { display:flex; align-items:center; justify-content:space-between; cursor:pointer; list-style:none; padding:15px 0; font-size:15px; }
+.mobile-category-branch summary::-webkit-details-marker { display:none; }
+.mobile-category-branch[open] > summary { color:var(--gold); }
+.mobile-category-branch[open] > summary svg { transform:rotate(180deg); }
+.mobile-category-branch > div { padding:0 0 12px 14px; border-left:1px solid var(--line); margin-bottom:12px; }
+.mobile-category-tree a { display:flex; justify-content:space-between; padding:12px 0; font-size:13px; }
+.mobile-category-tree > a { padding:15px 0; border-bottom:1px solid var(--line); font-size:15px; }
+.mobile-category-tree .mobile-category-all { color:var(--gold); font-weight:600; }
+@media(max-width:1023px) {
+  .desktop-categories { display:none; }
+  .mobile-departments { display:flex; }
+  .mobile-menu { display:flex; }
+}
 .mobile-menu { display:none; }
+@media(max-width:1023px) { .mobile-menu { display:flex; } }
+.category-crumb { display:inline-flex; align-items:center; gap:10px; }
+.breadcrumbs { flex-wrap:wrap; }
+.select-filters { flex-wrap:wrap; }
+.select-filters .category-select { width:min(280px,100%); text-overflow:ellipsis; }
 .menu-dialog { padding:0; border:0; height:100dvh; max-height:100dvh; width:min(370px,90vw); max-width:90vw; margin:0 auto 0 0; background:white; }
 .menu-dialog::backdrop { background:#0008; }
 .menu-inner { padding:20px; }
