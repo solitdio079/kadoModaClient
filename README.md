@@ -250,8 +250,10 @@ Parent category pages include all descendant products. Legacy name links remain
 supported, including Elbiseler, Ceketler, Etekler, and Takımlar.
 
 Category administration supports choosing a parent, while product and Excel import
-selectors show full paths. Category cards show their path and descendant product
-counts. Parents with children or products cannot be deleted until those records
+selectors show full paths. Category management shows one full-width section per main category, with all
+descendants nested inside it, product counts, and edit/delete controls. Searching
+retains the full matching family. Each row can add a child with its parent
+preselected. Parents with children or products cannot be deleted until those records
 are moved or removed. Existing category IDs and product assignments are preserved
 by the API migration wherever matching names/legacy aliases can be adopted.
 
